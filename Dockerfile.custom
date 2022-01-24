@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+
+# Ubuntu is needed so that it has access to chkconfig
+FROM ubuntu:latest
+
+RUN apt-get update
+
+# Install jsvc which asks questions about time zones when it is installed
+# RUN printf "12\n10" | apt-get install jsvc -y
+
+# Install other things required for the controller
+RUN apt-get install wget curl openjdk-8-jre-headless net-tools -y
+
+# jsvc needs to come after the jre so it doesn't ask extra questions :P
+RUN apt-get install jsvc -y
+
+# Install gnupg for mongodb
+RUN apt-get install gnupg -y
+
+WORKDIR /home
+
+# Download and install mongodb
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+RUN apt-get update
+# It asks for time zones when being installed
+RUN printf "12\n10" | apt-get install mongodb-org -y
+
+# Download and install the controller
+ENV FILE_NAME="Omada_SDN_Controller_v5.0.30_linux_x64"
+RUN wget https://static.tp-link.com/upload/software/2022/202201/20220120/${FILE_NAME}.deb
+RUN dpkg –i ${FILE_NAME}.deb
+
+EXPOSE 8088 8043 8843 29810/udp 29811 29812 29813 29814
+
+WORKDIR /home
+
+# Bunch of crazy parameters to start up the controller from this page: https://github.com/mbentley/docker-omada-controller/blob/master/Dockerfile.v5.0.x
+# WORKDIR /opt/tplink/EAPController/lib
+#CMD ["tpeap","start",]
