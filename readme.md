@@ -1,6 +1,6 @@
 # TP-Link Omada Network Controller
 
-This repository contains Docker configuration to run the TP-Link Omada SDN Controller v5.15.20.20 in a container.
+This repository contains Docker configuration to run the TP-Link Omada SDN Controller v5.15.20.18 in a container.
 The Omada Controller allows you to manage TP-Link access points, switches, and gateways on your network.
 
 ## Requirements
@@ -13,9 +13,10 @@ The Omada Controller allows you to manage TP-Link access points, switches, and g
 This container includes:
 
 - Ubuntu 22.04 as the base OS
-- Omada Controller v5.15.20.20
+- Omada Controller v5.15.20.18 (installed via Debian package)
 - OpenJDK 17 (required by Omada 5.15.20+)
 - MongoDB 7.0
+- Performance-optimized configuration for maximum CPU resources
 
 ## Installation Details
 

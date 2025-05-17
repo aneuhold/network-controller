@@ -5,6 +5,15 @@ services:
       dockerfile: Dockerfile
     container_name: omada-controller
     restart: unless-stopped
+    # CPU and memory resource configuration to maximize performance
+    cpus: 4.0 # Use up to 4 CPU cores
+    mem_limit: 6g # Use up to 6GB memory
+    mem_reservation: 2g # Reserve at least 2GB
+    # Performance tuning
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     ports:
       - "8088:8088" # HTTP portal
       - "8043:8043" # HTTPS portal
@@ -15,10 +24,10 @@ services:
       - "29813:29813" # Discovery port
       - "29814:29814" # Discovery port
     volumes:
-      - omada-data:/opt/tplink/EAPController/data
-      - omada-logs:/opt/tplink/EAPController/logs
-      - omada-work:/opt/tplink/EAPController/work
-      - mongodb-data:/data/db
+      - omada-data:/opt/tplink/EAPController/data:Z
+      - omada-logs:/opt/tplink/EAPController/logs:Z
+      - omada-work:/opt/tplink/EAPController/work:Z
+      - mongodb-data:/data/db:Z
     networks:
       - omada-network
 
