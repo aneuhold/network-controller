@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  omada-controller:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: omada-controller
+    restart: unless-stopped
+    ports:
+      - "8088:8088" # HTTP portal
+      - "8043:8043" # HTTPS portal
+      - "8843:8843" # HTTPS portal for controller to manage EAPs
+      - "29810:29810" # Discovery port
+      - "29811:29811" # Discovery port
+      - "29812:29812" # Discovery port
+      - "29813:29813" # Discovery port
+      - "29814:29814" # Discovery port
+    volumes:
+      - omada-data:/opt/tp-link/omada-controller/data
+      - omada-logs:/opt/tp-link/omada-controller/logs
+      - omada-work:/opt/tp-link/omada-controller/work
+    networks:
+      - omada-network
+
+networks:
+  omada-network:
+    driver: bridge
+
+volumes:
+  omada-data:
+  omada-logs:
+  omada-work:
