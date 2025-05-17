@@ -17,6 +17,17 @@ This container includes:
 - OpenJDK 17 (required by Omada 5.15.20+)
 - MongoDB 7.0
 
+## Installation Details
+
+This container uses the official TP-Link Omada Controller installer. The controller is installed to the standard path `/opt/tplink/EAPController`.
+
+For compatibility, symbolic links are created:
+
+- `/tp-link/omada-controller` → `/opt/tplink/EAPController`
+- `/omada-controller` → `/opt/tplink/EAPController`
+
+This ensures the controller and its files can be found regardless of which path convention is used.
+
 ## Installation and Setup
 
 1. Clone this repository:
@@ -55,6 +66,7 @@ The container uses Docker volumes for data persistence:
 - `omada-data`: Stores controller configuration and data
 - `omada-logs`: Stores controller logs
 - `omada-work`: Stores working files
+- `mongodb-data`: Stores MongoDB database files
 
 ## Stopping the Container
 
@@ -63,7 +75,7 @@ The container uses Docker volumes for data persistence:
 docker-compose down
 
 # Using Podman
-podman-compose down
+podman compose down
 ```
 
 ## Managing the Container
@@ -93,9 +105,10 @@ podman run -d \
   --restart=always \
   -p 8088:8088 -p 8043:8043 -p 8843:8843 \
   -p 29810:29810 -p 29811:29811 -p 29812:29812 -p 29813:29813 -p 29814:29814 \
-  -v omada-data:/opt/tp-link/omada-controller/data \
-  -v omada-logs:/opt/tp-link/omada-controller/logs \
-  -v omada-work:/opt/tp-link/omada-controller/work \
+  -v omada-data:/opt/tplink/EAPController/data \
+  -v omada-logs:/opt/tplink/EAPController/logs \
+  -v omada-work:/opt/tplink/EAPController/work \
+  -v mongodb-data:/data/db \
   localhost/omada-controller:latest
 ```
 
@@ -117,6 +130,53 @@ podman run -d --name omada-controller [OPTIONS] localhost/omada-controller:lates
 
 ## Troubleshooting
 
-- If the controller cannot discover your devices, ensure that your network configuration allows UDP broadcasts.
-- Check the container logs for any issues: `docker logs omada-controller` or `podman logs omada-controller`
-- For detailed logs, examine the files in the logs volume.
+### Common Issues
+
+- **Web Interface Not Available**: The container startup script checks for port 8088 availability. If after 5 minutes the web interface is not available, check the logs.
+- **Discovery Issues**: If the controller cannot discover your TP-Link devices, ensure your network configuration allows UDP broadcasts on ports 29810-29814.
+- **High CPU Usage**: If you notice high CPU usage when the container starts, wait about 5 minutes for it to stabilize. The initial startup process can be resource-intensive.
+- **Installation Errors**: If the installation fails, check the logs for specific errors. You might need to clean existing data volumes if upgrading from a previous version.
+- **Previous Installation Detected**: If you see errors about a "controller installed by deb", the container will try to clean up the previous installation automatically. If it fails, you may need to manually remove the volumes and rebuild the container.
+- **Path Issues**: The container uses a standard path (`/opt/tplink/EAPController`) and creates symbolic links to maintain compatibility. If you encounter path-related errors, please report them.
+
+### Viewing Logs
+
+- Use the included script: `./logs.sh`
+- Direct container logs: `podman logs omada-controller` or `docker logs omada-controller`
+- Detailed application logs: These are stored in the omada-logs volume
+
+### Reset Installation
+
+If you encounter persistent issues with the controller, you can completely reset the installation:
+
+```bash
+# Stop and remove the container
+podman stop omada-controller
+podman rm omada-controller
+
+# Remove all volumes to start fresh
+podman volume rm omada-data omada-logs omada-work mongodb-data
+
+# Rebuild and start the container
+./restart.sh
+```
+
+This will remove all configuration and data, so use with caution!
+
+### Omada Controller Management Commands
+
+Once inside the container, you can use the following commands to manage the Omada Controller:
+
+```bash
+# Standard commands via tpeap
+tpeap start    # Start the controller
+tpeap stop     # Stop the controller
+tpeap restart  # Restart the controller
+tpeap status   # Check controller status
+```
+
+You can execute these commands using:
+
+```bash
+podman exec omada-controller /opt/tp-link/omada-controller/bin/control.sh status
+```

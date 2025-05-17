@@ -21,9 +21,10 @@ podman run -d \
   -p 29812:29812 \
   -p 29813:29813 \
   -p 29814:29814 \
-  -v omada-data:/opt/tp-link/omada-controller/data \
-  -v omada-logs:/opt/tp-link/omada-controller/logs \
-  -v omada-work:/opt/tp-link/omada-controller/work \
+  -v omada-data:/opt/tplink/EAPController/data \
+  -v omada-logs:/opt/tplink/EAPController/logs \
+  -v omada-work:/opt/tplink/EAPController/work \
+  -v mongodb-data:/data/db \
   localhost/omada-controller:latest
 
 echo "✅ Container started!"
@@ -31,3 +32,6 @@ echo "📊 To view logs: podman logs -f omada-controller"
 echo "🖥️  Access the web interface at:"
 echo "   - http://localhost:8088"
 echo "   - https://localhost:8043"
+echo ""
+echo "⏳ Note: The controller may take a minute or two to fully start up."
+echo "   Check the logs to confirm when it's ready."

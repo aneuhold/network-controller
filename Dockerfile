@@ -4,7 +4,7 @@ FROM --platform=linux/amd64 ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Set environment variables for Omada Controller
-ENV OMADA_DIR="/opt/tp-link/omada-controller"
+ENV OMADA_DIR="/opt/tplink/EAPController"
 ENV OMADA_VERSION="5.15.20.20"
 
 # Install dependencies
@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install -y \
   gcc \
   findutils \
   openjdk-17-jdk-headless \
+  expect \
+  netcat-openbsd \
+  net-tools \
   && rm -rf /var/lib/apt/lists/*
 
 # Create a symlink for the JVM to make it more discoverable
@@ -40,21 +43,16 @@ RUN apt-get update && apt-get install -y \
 # Create necessary directories
 RUN mkdir -p ${OMADA_DIR}
 
-# Download and install Omada Controller
+# Download Omada Controller installer (but don't install yet)
 WORKDIR /tmp
 RUN wget -nv "https://static.tp-link.com/upload/software/2025/202504/20250425/Omada_SDN_Controller_v5.15.20.20_linux_x64_20250416110546.tar.gz" && \
   tar zxvf Omada_SDN_Controller_v5.15.20.20_linux_x64_20250416110546.tar.gz && \
-  cd Omada_SDN_Controller_v5.15.20.20_linux_x64 && \
-  mkdir -p ${OMADA_DIR} && \
-  cp -r * ${OMADA_DIR} && \
-  cd ${OMADA_DIR} && \
-  mkdir -p logs && \
-  chmod 755 bin/*.sh && \
-  cd /tmp && \
-  rm -rf Omada_SDN_Controller_v5.15.20.20_linux_x64* 
+  mv Omada_SDN_Controller_v5.15.20.20_linux_x64 /opt/ && \
+  rm Omada_SDN_Controller_v5.15.20.20_linux_x64_20250416110546.tar.gz && \
+  chmod 755 /opt/Omada_SDN_Controller_v5.15.20.20_linux_x64/*.sh
 
 # Set volumes and ports
-VOLUME ["/opt/tp-link/omada-controller/data", "/opt/tp-link/omada-controller/logs", "/opt/tp-link/omada-controller/work"]
+VOLUME ["${OMADA_DIR}/data", "${OMADA_DIR}/logs", "${OMADA_DIR}/work", "/data/db"]
 
 # Expose ports
 # 8088 - HTTP portal
