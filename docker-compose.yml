@@ -24,10 +24,10 @@ services:
       - "29813:29813" # Discovery port
       - "29814:29814" # Discovery port
     volumes:
-      - omada-data:/opt/tplink/EAPController/data:Z
-      - omada-logs:/opt/tplink/EAPController/logs:Z
-      - omada-work:/opt/tplink/EAPController/work:Z
-      - mongodb-data:/data/db:Z
+      - omada-data:/opt/tplink/EAPController/data
+      - omada-logs:/opt/tplink/EAPController/logs
+      - omada-work:/opt/tplink/EAPController/work
+      - mongodb-data:/data/db
     networks:
       - omada-network
 

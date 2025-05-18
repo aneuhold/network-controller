@@ -48,8 +48,8 @@ VOLUME ["${OMADA_DIR}/data", "${OMADA_DIR}/logs", "${OMADA_DIR}/work", "/data/db
 # 27001-27002 - MongoDB ports
 EXPOSE 8088 8043 8843 29810-29814 27001-27002
 
-# Create a startup script
-COPY start-omada.sh /start-omada.sh
+# Create the startup script
+COPY ./container_scripts/start-omada.sh /start-omada.sh
 RUN chmod +x /start-omada.sh
 
 # Start the controller
