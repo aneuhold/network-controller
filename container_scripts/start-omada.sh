@@ -5,16 +5,16 @@ echo "TP-Link Omada Controller - Simple Startup"
 echo "============================================="
 
 # Install omada if not found
-if ! command -v tpeap &> /dev/null; then
-  echo "⚠️ Omada Controller not found. Installing..."
-  dpkg -i /tmp/omada-controller.deb
-  if [ $? -ne 0 ]; then
-    echo "❌ Failed to install Omada Controller package."
-    exit 1
-  fi
-else
-  echo "✅ Omada Controller already installed."
-fi
+# if ! command -v tpeap &> /dev/null; then
+#   echo "⚠️ Omada Controller not found. Installing..."
+#   dpkg -i /tmp/omada-controller.deb
+#   if [ $? -ne 0 ]; then
+#     echo "❌ Failed to install Omada Controller package."
+#     exit 1
+#   fi
+# else
+#   echo "✅ Omada Controller already installed."
+# fi
 
 # Start Omada Controller manually
 echo "● Starting Omada Controller service..."
