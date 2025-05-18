@@ -1,5 +1,7 @@
 # TP-Link Omada Network Controller
 
+## ‼️⚠️ This Project was a failed experiment. It is just here for note-purposes. See a working example at [this repo](https://github.com/mbentley/docker-omada-controller). ⚠️‼️
+
 This repository contains Docker configuration to run the TP-Link Omada SDN Controller v5.15.20.18 in a container.
 The Omada Controller allows you to manage TP-Link access points, switches, and gateways on your network.
 
