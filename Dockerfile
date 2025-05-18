@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
   gnupg \
   wget \
   openjdk-17-jdk-headless \
-  jsvc
+  jsvc \
+  netstat
 
 # Get LibSSL 1.1
 RUN echo "deb http://security.ubuntu.com/ubuntu focal-security main" | tee /etc/apt/sources.list.d/focal-security.list && \
