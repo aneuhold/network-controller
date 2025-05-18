@@ -21,21 +21,17 @@ RUN echo "deb http://security.ubuntu.com/ubuntu focal-security main" | tee /etc/
   apt-get update && \
   apt-get install libssl1.1
 
-# Install MongoDB 7
+# Install MongoDB 4.4
 RUN apt-get update && \
-  curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor && \
-  echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
+  curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | gpg -o /usr/share/keyrings/mongodb-server-4.4.gpg --dearmor && \
+  echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-4.4.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list && \
   # This next part has to be done to handle an issue with installing MongoDB on a container. 
   ln -T /bin/true /usr/bin/systemctl && \
   apt-get update && \
   apt-get install -y mongodb-org
 
-# Create necessary directories and ensure they're clean
-RUN mkdir -p ${OMADA_DIR} && \
-  # Create the compatibility symlinks ahead of time
-  mkdir -p /tp-link && \
-  ln -sf ${OMADA_DIR} /tp-link/omada-controller && \
-  ln -sf ${OMADA_DIR} /omada-controller
+# Create necessary directories ahead of time
+RUN mkdir -p ${OMADA_DIR}
 
 # Use a direct download from TP-Link's website for the Omada Controller
 RUN curl "https://static.tp-link.com/upload/software/2025/202503/20250331/Omada_SDN_Controller_v${OMADA_VERSION}_linux_x64.deb" -o /tmp/omada-controller.deb
